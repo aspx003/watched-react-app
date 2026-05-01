@@ -42,6 +42,10 @@ export const searchSimkl = async (type, searchText) => {
 }
 
 export const getMediaDetail = async (mediaType, id) => {
+  if(mediaType === "movie") {
+    mediaType = "movies"
+  }
+
   const response = await fetch(
     `${BASE_URL}${mediaType}/${id}?extended=full&client_id=${CLIENT_ID}`
   )

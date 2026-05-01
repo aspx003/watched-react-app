@@ -17,16 +17,19 @@ export default function CollectionsPage() {
   }
 
   return (
-    <div className="mt-5 flex flex-wrap items-center gap-3">
+    <div className="mt-5 flex flex-wrap items-start gap-3">
+      {/* 3 Tabs, For movies, shows and animes */}
       {items.length > 0 &&
         items.map((item) => (
           <div key={item.id} className="group w-30 space-y-2 text-center">
             <NavLink to={"/media/" + item.type + "/" + item.id} key={item.id}>
-              <img
-                src={item.posterUrl}
-                alt={item.title}
-                className="rounded-md"
-              />
+              <div className="w-full aspect-2/3">
+                <img
+                  src={item.posterUrl}
+                  alt={item.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
             </NavLink>
             <p className="mt-2 line-clamp-2 text-xs leading-tight font-medium">
               {item.title}

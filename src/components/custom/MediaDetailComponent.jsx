@@ -1,48 +1,56 @@
-import { Badge } from "@/components/ui/badge";
 import StatBox from "@/components/custom/StatBox";
+import { Badge } from "@/components/ui/badge";
+import {
+  addToCollection,
+  isPresentInCollection,
+  removeFromCollection,
+} from "@/database/collectionsDatabase";
 import { imageBuilder } from "@/utils/imageBuilder";
-
-import {
-  Star,
-  Clock,
-  Calendar,
-  Info,
-  PlayCircle,
-  ExternalLink,
-  Link,
-} from "lucide-react";
+import { Calendar, Clock, ExternalLink, Info, PlayCircle } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
-import {
-  TooltipProvider,
-  TooltipTrigger,
-  TooltipContent,
-  Tooltip,
-} from "../ui/tooltip";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Separator } from "../ui/separator";
-import { useState } from "react";
+import RecommendationList from "./RecommendationList";
 
 export function MediaDetailComponent({ media }) {
   const [present, setPresent] = useState(false);
 
-  const onClick = () => {};
+  useEffect(() => {
+    isPresentInCollection(media.ids.simkl).then(setPresent);
+  }, [media]);
+
+  const onClick = () => {
+    if (!present) {
+      addToCollection(
+        media.ids.simkl,
+        media.title,
+        media.year,
+        media.type,
+        media.poster,
+      );
+      setPresent(true);
+    } else {
+      removeFromCollection(media.ids.simkl);
+      setPresent(false);
+    }
+  };
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-4">
       {/* Hero Section */}
       <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-3">
-        <div className="group relative flex aspect-2/3 flex-col items-center justify-center overflow-hidden rounded-xl">
-          <Image
-            loading="eager"
+        <div className="group relative flex aspect-2/3 flex-col items-center justify-center overflow-hidden">
+          <img
             src={imageBuilder(media.poster)}
             alt={media.title}
-            height={500}
-            width={400}
-            className="rounded-xl object-cover"
+            className="object-cover"
           />
-          {/*<Badge className="absolute top-4 left-4 bg-primary text-primary-foreground">
-            {media.status.toUpperCase()}
-          </Badge>*/}
+          {media.type != "movie" && (
+            <Badge className="absolute top-4 left-4 bg-primary text-primary-foreground">
+              {media.status.toUpperCase()}
+            </Badge>
+          )}
         </div>
 
         {/* Essential Info */}
@@ -54,9 +62,6 @@ export function MediaDetailComponent({ media }) {
               <span>{media.director}</span>
             </div>
             <h1 className="text-4xl font-bold tracking-tight">{media.title}</h1>
-            <p className="text-lg text-muted-foreground italic">
-              {media.title}
-            </p>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -73,16 +78,18 @@ export function MediaDetailComponent({ media }) {
               label="Runtime"
               value={`${media.runtime}m`}
             />
-            {/*<StatBox
-              icon={<Calendar className="h-4 w-4 text-green-500" />}
-              label="Episodes"
-              value={media.total_episodes}
-            />*/}
-            {/*<StatBox
+            {media.type != "movie" && (
+              <StatBox
+                icon={<Calendar className="h-4 w-4 text-green-500" />}
+                label="Episodes"
+                value={media.total_episodes}
+              />
+            )}
+            <StatBox
               icon={<Info className="h-4 w-4 text-purple-500" />}
               label="Rank"
               value={`#${media.rank}`}
-            />*/}
+            />
           </div>
 
           <p className="line-clamp-4 text-sm leading-relaxed text-muted-foreground">
@@ -116,53 +123,35 @@ export function MediaDetailComponent({ media }) {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">First Aired</span>
-                <span className="font-medium">
-                  {/*{new Date(media.first_aired).toLocaleDateString()}*/}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Type</span>
-                <span className="font-medium uppercase">
-                  {/*{media.anime_type}*/}
-                </span>
-              </div>
+              {media.type === "movie" && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Released</span>
+                  <span className="font-medium">
+                    {new Date(media.released).toLocaleDateString()}
+                  </span>
+                </div>
+              )}
+              {media.type === "show" && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">First Aired</span>
+                  <span className="font-medium">
+                    {new Date(media.first_aired).toLocaleDateString()}
+                  </span>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
 
-        {/* Right Column: Relations & Recommendations */}
-        <div className="space-y-6 lg:col-span-2">
-          {media.users_recommendations.length > 0 && (
-            <div>
-              <h3 className="mb-3 text-lg font-semibold">
-                You Might Also Like
-              </h3>
-              <div className="flex items-start gap-4 overflow-x-auto pb-2">
-                {media.users_recommendations.map((rec) => (
-                  <div
-                    key={rec.ids.simkl}
-                    className="group w-24 space-y-2 text-center"
-                  >
-                    <Link href={"/media/" + rec.ids.simkl} key={rec.ids.simkl}>
-                      <Image
-                        height={100}
-                        width={200}
-                        src={imageBuilder(rec.poster)}
-                        alt={rec.title}
-                        className="rounded-md"
-                      />
-                    </Link>
-                    <p className="mt-2 line-clamp-2 text-[10px] leading-tight font-medium">
-                      {rec.title}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+        {/* User Recommendations */}
+        {media.users_recommendations ? (
+          <RecommendationList
+            type={media.type}
+            data={media.users_recommendations}
+          />
+        ) : (
+          <p>No Reccomendations Yet</p>
+        )}
       </div>
     </div>
   );

@@ -30,7 +30,13 @@ const AnimeDetailCard = ({ data }) => {
 
   const onClick = async () => {
     if (!present) {
-      await addToCollection(data.ids.simkl, data.year, data.type);
+      await addToCollection(
+        data.ids.simkl,
+        data.title,
+        data.year,
+        data.type,
+        data.poster,
+      );
       setPresent(true);
     } else {
       await removeFromCollection(data.ids.simkl);
@@ -46,9 +52,9 @@ const AnimeDetailCard = ({ data }) => {
           <img
             src={imageBuilder(data.poster)}
             alt={data.title}
-            className="rounded-xl object-cover"
+            className="object-cover"
           />
-          <Badge className="absolute top-4 left-4 bg-primary text-primary-foreground">
+          <Badge className="absolute top-5 left-3 bg-primary text-primary-foreground">
             {data.status.toUpperCase()}
           </Badge>
         </div>
@@ -62,7 +68,7 @@ const AnimeDetailCard = ({ data }) => {
               <span>{data.studios[0].name}</span>
             </div>
             <h1 className="text-4xl font-bold tracking-tight">
-              {data.en_title}
+              {data.en_title ? data.en_title : data.title}
             </h1>
             <p className="text-lg text-muted-foreground italic">{data.title}</p>
           </div>
@@ -156,9 +162,12 @@ const AnimeDetailCard = ({ data }) => {
           </Card>
         </div>
 
-        {/* Right Column: Relations & Recommendations */}
+        {/* User Recommendations */}
         {data.users_recommendations ? (
-          <RecommendationList data={data.users_recommendations} />
+          <RecommendationList
+            data={data.users_recommendations}
+            type={"anime"}
+          />
         ) : (
           <p>No Reccomendations Yet</p>
         )}
