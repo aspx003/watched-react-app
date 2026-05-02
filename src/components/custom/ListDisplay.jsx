@@ -14,7 +14,7 @@ export default function ListDisplay({ items }) {
       {items.length > 0 &&
         items.map((item) => (
           <div key={item.id} className="group w-30 space-y-2 text-center">
-            <NavLink to={"/media/" + item.type + "/" + item.id} key={item.id}>
+            <NavLink to={"/media/" + item.type + "/" + item.id}>
               <div className="w-full aspect-2/3">
                 <img
                   src={item.posterUrl}

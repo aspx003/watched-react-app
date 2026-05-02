@@ -15,29 +15,18 @@ import { useState } from "react";
 import { imageBuilder } from "@/utils/imageBuilder";
 import { Spinner } from "@/components/ui/spinner";
 import { NavLink } from "react-router";
-
+import { useMutation } from "@tanstack/react-query";
 export default function SearchPage() {
   const [search, setSearch] = useState("");
   const [mediaType, setMediaType] = useState("anime");
-  const [searchData, setSearchData] = useState(null);
-  const [loading, setLoading] = useState(false);
 
-  function searchMedia() {
-    if (!mediaType || !search) {
-      return;
-    }
-
-    setLoading(true);
-
-    searchSimkl(mediaType, search)
-      .then(setSearchData)
-      .catch((e) => {
-        setLoading(false);
-        setSearchData(null);
-        console.log(e);
-      })
-      .finally(() => setLoading(false));
-  }
+  const { data, mutate, isPending, error } = useMutation({
+    mutationKey: ["search"],
+    mutationFn: (search) => searchSimkl(mediaType, search),
+    onSuccess: () => {
+      setSearch("");
+    },
+  });
 
   return (
     <div className="p-4">
@@ -63,29 +52,39 @@ export default function SearchPage() {
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search something..."
         />
-        <Button onClick={searchMedia}>
+        <Button onClick={() => mutate(search)} disabled={isPending}>
           <Search />
           Search
         </Button>
       </Field>
-      {loading && (
+      {isPending && (
         <div className="flex h-dvh items-center justify-center">
           <Spinner />
         </div>
       )}
-      <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
-        {searchData &&
-          searchData.map((data) => {
+      {data && (
+        <div className="mt-5 flex flex-wrap items-start gap-3">
+          {data.map((data) => {
             return (
-              <NavLink
-                href={"/media/" + mediaType + "/" + data.ids.simkl_id}
-                key={data.ids.simkl_id}
-              >
-                <img src={imageBuilder(data.poster)} alt={data.title} />
-              </NavLink>
+              <div key={data.id} className="group w-30 space-y-2 text-center">
+                <NavLink to={"/media/" + mediaType + "/" + data.ids.simkl_id}>
+                  <div className="w-full aspect-2/3">
+                    <img
+                      src={imageBuilder(data.poster)}
+                      alt={data.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </NavLink>
+                <p className="mt-2 line-clamp-2 text-xs leading-tight font-medium">
+                  {data.title} ({data.year})
+                </p>
+              </div>
             );
           })}
-      </div>
+        </div>
+      )}
+      {error && <div>{error.message}</div>}
     </div>
   );
 }
