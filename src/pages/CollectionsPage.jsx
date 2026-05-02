@@ -1,41 +1,35 @@
+import CollectionsCharts from "@/components/custom/CollectionsCharts";
+import ListDisplay from "@/components/custom/ListDisplay";
 import { Spinner } from "@/components/ui/spinner";
-import { db } from "@/database/db";
-import { useLiveQuery } from "dexie-react-hooks";
-import { NavLink } from "react-router";
+import { getGroupedData } from "@/database/collectionsDatabase";
+import { useQuery } from "@tanstack/react-query";
 
 export default function CollectionsPage() {
-  const items = useLiveQuery(() => db.table("collections").toArray(), []);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["collections"],
+    queryFn: getGroupedData,
+  });
 
-  if (!items) return <Spinner />;
+  if (isLoading) return <Spinner />;
 
-  if (items.length === 0) {
-    return (
-      <div className="flex h-dvh items-center justify-center">
-        <p className="text-2xl font-bold">Such Emptiness</p>
-      </div>
-    );
-  }
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
-    <div className="mt-5 flex flex-wrap items-start gap-3">
-      {/* 3 Tabs, For movies, shows and animes */}
-      {items.length > 0 &&
-        items.map((item) => (
-          <div key={item.id} className="group w-30 space-y-2 text-center">
-            <NavLink to={"/media/" + item.type + "/" + item.id} key={item.id}>
-              <div className="w-full aspect-2/3">
-                <img
-                  src={item.posterUrl}
-                  alt={item.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </NavLink>
-            <p className="mt-2 line-clamp-2 text-xs leading-tight font-medium">
-              {item.title}
-            </p>
-          </div>
-        ))}
+    <div className="mt-5 flex flex-col items-start gap-3">
+      <CollectionsCharts />
+
+      <div>
+        <h3 className="text-xl mb-2">Anime</h3>
+        <ListDisplay items={data.anime} />
+      </div>
+      <div>
+        <h3 className="text-xl mb-2">Movies</h3>
+        <ListDisplay items={data.movies} />
+      </div>
+      <div>
+        <h3 className="text-xl mb-2">TV</h3>
+        <ListDisplay items={data.tv} />
+      </div>
     </div>
   );
 }

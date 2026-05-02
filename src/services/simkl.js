@@ -42,8 +42,12 @@ export const searchSimkl = async (type, searchText) => {
 }
 
 export const getMediaDetail = async (mediaType, id) => {
-  if(mediaType === "movie") {
+  if (mediaType === "movie") {
     mediaType = "movies"
+  }
+
+  if (mediaType === "show") {
+    mediaType = "tv"
   }
 
   const response = await fetch(
