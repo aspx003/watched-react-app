@@ -25,7 +25,6 @@ const AnimeDetailCard = ({ data }) => {
 
   useEffect(() => {
     isPresentInCollection(data.ids.simkl).then(setPresent);
-    console.log(data);
   }, [data]);
 
   const onClick = async () => {
