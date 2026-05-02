@@ -1,18 +1,64 @@
-# React + Vite
+# Watched!
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple web app to store all your Anime, Movies and TV Shows.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Store all your Anime, Movies and TV Shows
+- Search for Anime, Movies and TV Shows
+- Charts, Collections and Trending
+- Local storage using IndexedDB no need to worry about telemetry
+- No ADS! (for now)
+- Using Simkl api under the hood!
 
-## React Compiler
+## TODO
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- [x] Store all your Anime, Movies and TV Shows
+- [x] Search for Anime, Movies and TV Shows
+- [x] Charts, Collections and Trending
+- [x] Local storage using IndexedDB no need to worry about telemetry
+- [x] No ADS!
+- [ ] Desktop App
+- [ ] Mobile App
+- [ ] Export all data in JSON format
 
-Note: This will impact Vite dev & build performances.
+## Getting Started
 
-## Expanding the ESLint configuration
+### Prerequisites
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Node.js
+- NPM
+- Tanstack Query
+- Shadcn UI
+- Tailwind CSS
+
+## Database
+
+The IndexedDB is currently being used to store all the Anime, Movies and TV Shows.
+Using Dexie.js, the database is being created and managed.
+
+### Installation
+
+1. Clone the repository
+2. Navigate to the project directory
+3. Install the dependencies
+
+```bash
+npm install
+```
+
+4. Start the development server
+
+```bash
+npm run dev
+```
+
+5. Open your browser and navigate to `http://localhost:5173`
+
+## Contributing
+
+Contributions are welcome! If you find a bug or have a suggestion, please open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the MIT License.
