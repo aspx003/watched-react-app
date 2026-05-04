@@ -1,7 +1,7 @@
 import AnimeDetailCard from "@/components/custom/AnimeDetailCard";
 import { Spinner } from "@/components/ui/spinner";
 import { getMediaDetail } from "@/services/simkl";
-import { MediaDetailComponent } from "@/components/custom/MediaDetailComponent";
+import { MediaDetailComponent } from "@/components/media/MediaDetailComponent";
 import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 
