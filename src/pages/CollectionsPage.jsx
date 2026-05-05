@@ -1,4 +1,4 @@
-import CollectionsCharts from "@/components/custom/CollectionsCharts";
+// import CollectionsCharts from "@/components/custom/CollectionsCharts";
 import ListDisplay from "@/components/custom/ListDisplay";
 import { Spinner } from "@/components/ui/spinner";
 import { getGroupedData } from "@/database/collectionsDatabase";
@@ -16,7 +16,7 @@ export default function CollectionsPage() {
 
   return (
     <div className="mt-5 flex flex-col items-start gap-3">
-      <CollectionsCharts />
+      {/* <CollectionsCharts /> */}
 
       <div>
         <h3 className="text-xl mb-2">Anime</h3>

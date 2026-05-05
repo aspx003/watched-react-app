@@ -1,34 +1,52 @@
-import { SettingsIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { TabNav, TabNavItem } from "./TabNav";
-import { useLocation } from "react-router";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import { SettingsIcon, SearchIcon, DatabaseIcon } from "lucide-react";
+import { useNavigate } from "react-router";
+
+const pages = [
+  {
+    name: "Search",
+    icon: <SearchIcon />,
+    path: "/search",
+  },
+  {
+    name: "Collections",
+    icon: <DatabaseIcon />,
+    path: "/collections",
+  },
+  {
+    name: "Settings",
+    icon: <SettingsIcon />,
+    path: "/settings",
+  },
+];
 
 export default function Navbar() {
-  const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   return (
-    <nav className="flex items-center justify-between">
-      <h1 className="text-2xl font-bold tracking-tighter">Watched</h1>
-
-      <div>
-        <TabNav>
-          <TabNavItem label="Home" href="/" selected={pathname === "/"} />
-          <TabNavItem
-            label="Search"
-            href="/search"
-            selected={pathname === "/search"}
-          />
-          <TabNavItem
-            label="Collections"
-            href="/collections"
-            selected={pathname === "/collections"}
-          />
-        </TabNav>
-      </div>
-
-      <Button variant="outline" size="icon">
-        <SettingsIcon />
-      </Button>
-    </nav>
+    <Box
+      my={5}
+      display={"flex"}
+      flexDirection={"row"}
+      justifyContent={"space-between"}
+      alignItems={"center"}
+    >
+      <Typography variant="h3">Watched!</Typography>
+      <Box>
+        {pages.map((page) => {
+          return (
+            <Button
+              onClick={() => navigate(page.path)}
+              key={page.name}
+              startIcon={page.icon}
+            >
+              {page.name}
+            </Button>
+          );
+        })}
+      </Box>
+    </Box>
   );
 }
